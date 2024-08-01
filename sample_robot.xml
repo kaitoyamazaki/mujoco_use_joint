@@ -1,0 +1,39 @@
+<mujoco model="simple_arm">
+    <compiler angle="radian"/>
+    <default>
+        <!-- Fusion 360 の座標系を MuJoCo に変換します -->
+        <geom type="mesh" xyaxes="1 0 0 0 0 1"/>
+        <joint type="hinge" limited="true" axis="0 1 0"/>
+        <position ctrllimited="true" kp="1" kv="0.1"/>
+    </default>
+
+    <asset>
+        <mesh name="base" file="stl/base.stl" scale=".001 .001 .001"/>
+        <mesh name="link1" file="stl/link1.stl" scale=".001 .001 .001"/>
+        <mesh name="link2" file="stl/link2.stl" scale=".001 .001 .001"/>
+    </asset>
+
+    <worldbody>
+        <body name="base">
+            <geom mesh="base"/>
+            <body name="link1">
+                <joint name="joint1" pos=".1 -.015 .05" axis="0 1 0" range="-0.78 0.78"/>
+                <geom mesh="link1"/>
+                <body name="link2">
+                    <joint name="joint2" pos=".1583 -.01 .1994" axis="0 1 0" range="-1.57 1.57"/>
+                    <geom mesh="link2"/>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+
+    <actuator>
+        <position name="joint1" joint="joint1" ctrlrange="-0.78 0.78"/>
+        <position name="joint2" joint="joint2" ctrlrange="-1.57 1.57"/>
+    </actuator>
+
+    <contact>
+        <exclude body1="base" body2="link1"/>
+        <exclude body1="link1" body2="link2"/>
+    </contact>
+</mujoco>
